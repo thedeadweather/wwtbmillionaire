@@ -13,8 +13,6 @@ RSpec.describe Game, type: :model do
   # игра с прописанными игровыми вопросами
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
 
-  let(:game) { FactoryBot.create(:game) }
-
   # Группа тестов на работу фабрики создания новых игр
   context 'Game Factory' do
     it 'Game.create_game! new correct game' do
@@ -112,5 +110,33 @@ RSpec.describe Game, type: :model do
   it 'current_game_question previous_level' do
     expect(game_w_questions.current_game_question).to eq game_w_questions.game_questions.first
     expect(game_w_questions.previous_level).to eq -1
+  end
+
+  context '.answer_current_question!' do
+    let(:q) { game_w_questions.current_game_question }
+    it 'when correct answer' do
+      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+    end
+
+    it 'when incorrect answer' do
+      expect(
+        game_w_questions.answer_current_question!(q.variants.key(q.question.answer4))
+      ).to be_falsey
+    end
+
+    it 'after final question' do
+      15.times do
+        game_w_questions.answer_current_question!(q.correct_answer_key)
+      end
+      expect(game_w_questions.prize).to eq 1000000
+      expect(game_w_questions.is_failed).to be false
+    end
+
+    it 'when time is expired' do
+      game_w_questions.created_at -= 36.minutes
+      expect(
+        game_w_questions.answer_current_question!(q.correct_answer_key)
+      ).to be false
+    end
   end
 end
