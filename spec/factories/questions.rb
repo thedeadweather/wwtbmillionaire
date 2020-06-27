@@ -3,7 +3,7 @@
 # см. другие примеры на
 # http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :question do
     # Ответы сделаем рандомными для красоты
     answer1 { "#{rand(2001)}" }
@@ -16,6 +16,3 @@ FactoryGirl.define do
     sequence(:level) { |n| n % 15 }
   end
 end
-
-# PS: неплохой фильмец
-# https://ru.wikipedia.org/wiki/Космическая_одиссея_2001_года
