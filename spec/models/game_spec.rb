@@ -107,8 +107,11 @@ RSpec.describe Game, type: :model do
     expect(user.balance).to eq prize
   end
 
-  it 'current_game_question previous_level' do
+  it '.current_game_question' do
     expect(game_w_questions.current_game_question).to eq game_w_questions.game_questions.first
+  end
+
+  it '.previous_level' do
     expect(game_w_questions.previous_level).to eq -1
   end
 
@@ -116,12 +119,14 @@ RSpec.describe Game, type: :model do
     let(:q) { game_w_questions.current_game_question }
     it 'when correct answer' do
       expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+      expect(game_w_questions.status).to eq(:in_progress)
     end
 
     it 'when incorrect answer' do
       expect(
         game_w_questions.answer_current_question!(q.variants.key(q.question.answer4))
       ).to be_falsey
+      expect(game_w_questions.status).to eq(:fail)
     end
 
     it 'after final question' do
@@ -130,6 +135,7 @@ RSpec.describe Game, type: :model do
       end
       expect(game_w_questions.prize).to eq 1000000
       expect(game_w_questions.is_failed).to be false
+      expect(game_w_questions.status).to eq(:won)
     end
 
     it 'when time is expired' do
@@ -137,6 +143,7 @@ RSpec.describe Game, type: :model do
       expect(
         game_w_questions.answer_current_question!(q.correct_answer_key)
       ).to be false
+      expect(game_w_questions.status).to eq(:timeout)
     end
   end
 end
