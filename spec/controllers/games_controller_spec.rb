@@ -68,7 +68,6 @@ RSpec.describe GamesController, type: :controller do
     it 'creates game' do
       # сперва накидаем вопросов, из чего собирать новую игру
       generate_questions(15)
-
       post :create
       game = assigns(:game) # вытаскиваем из контроллера поле @game
 
@@ -84,9 +83,9 @@ RSpec.describe GamesController, type: :controller do
     it '#show game' do
       get :show, id: game_w_questions.id
       game = assigns(:game) # вытаскиваем из контроллера поле @game
+
       expect(game.finished?).to be_falsey
       expect(game.user).to eq(user)
-
       expect(response.status).to eq(200) # должен быть ответ HTTP 200
       expect(response).to render_template('show') # и отрендерить шаблон show
     end
@@ -105,11 +104,12 @@ RSpec.describe GamesController, type: :controller do
 
     # юзер отвечает на вопрос неправильно - игра заканчивается
     it 'answers incorrect' do
-      put :answer, id: game_w_questions.id, letter: q.variants.key(q.question.answer4)
+      put :answer, id: game_w_questions.id, letter: 'a'
       game = assigns(:game)
 
       expect(game.finished?).to be true
-      expect(game.current_level).to eq  0
+      expect(game.status).to eq(:fail)
+      expect(game.current_level).to eq 0
       expect(response).to redirect_to user_path(user)
       expect(flash[:alert]).to be
     end
@@ -136,7 +136,6 @@ RSpec.describe GamesController, type: :controller do
     it 'takes money' do
       # вручную поднимем уровень вопроса до выигрыша 200
       game_w_questions.update_attribute(:current_level, 2)
-
       put :take_money, id: game_w_questions.id
       game = assigns(:game)
       # expect(game.finished?).to be_truthy
@@ -145,7 +144,6 @@ RSpec.describe GamesController, type: :controller do
       # пользователь изменился в базе, надо в коде перезагрузить!
       user.reload
       expect(user.balance).to eq(200)
-
       expect(response).to redirect_to(user_path(user))
       expect(flash[:warning]).to be
     end
@@ -154,13 +152,11 @@ RSpec.describe GamesController, type: :controller do
     it 'try to create second game' do
       # убедились что есть игра в работе
       expect(game_w_questions.finished?).to be_falsey
-
       # отправляем запрос на создание, убеждаемся что новых Game не создалось
       expect { post :create }.to change(Game, :count).by(0)
 
       game = assigns(:game) # вытаскиваем из контроллера поле @game
       expect(game).to be_nil
-
       # и редирект на страницу старой игры
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
