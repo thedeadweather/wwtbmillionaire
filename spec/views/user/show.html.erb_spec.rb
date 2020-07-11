@@ -30,10 +30,10 @@ RSpec.describe 'users/show', type: :view do
 
   # залогиненный пользователь
   context "for current user" do
-    let(:user) { FactoryBot.build_stubbed(:user, name: 'Тестович') }
-    let(:current_user) { assign(:user, user) }
+    let(:user) { FactoryBot.create(:user, name: 'Тестович') }
     before do
-      allow(view).to receive(:current_user).and_return(current_user)
+      assign(:user, user)
+      sign_in user
       stub_template 'users/_game.html.erb' => 'User game goes here'
 
       render
