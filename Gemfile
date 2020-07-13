@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2.6'
+ruby '2.5.0'
 
+gem 'rails', '~> 4.2.6'
 # Удобная админка для управления любыми сущностями
 gem 'rails_admin'
 

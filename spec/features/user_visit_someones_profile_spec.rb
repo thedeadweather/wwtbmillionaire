@@ -28,7 +28,7 @@ RSpec.feature 'USER visits someones profile', type: :feature do
     # Кликаем по ссылке профиля юзера2
     click_link 'user2'
     #Ожидаем, что попадем на нужный url
-    expect(page).to have_current_path '/users/22'
+    expect(page).to have_current_path "/users/#{user2.id}"
     expect(page).to have_content '500 000 ₽'
     expect(page).to have_content '12 июля, 15:00'
     expect(page).to have_content '13 июля, 15:00'

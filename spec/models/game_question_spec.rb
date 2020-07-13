@@ -92,7 +92,7 @@ RSpec.describe GameQuestion, type: :model do
       fc = game_question.help_hash[:friend_call]
 
       expect(fc).to match(
-        /\A(Жора|Борис Бурда|Анатолий Вассерман|Федор Двинятин|Баба Таня|Александр Друзь) считает, что это вариант [ABCD]?\z/
+        /считает, что это вариант [ABCD]?\z/
       )
     end
   end
