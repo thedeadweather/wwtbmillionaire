@@ -9,7 +9,7 @@ RSpec.feature 'USER visits someones profile', type: :feature do
       FactoryBot.create(
         :game_with_questions,
         user: user2,
-        created_at: "#{i + 12} июля, 15:00",
+        created_at: Time.new(2020,07,"#{i + 12}",15,00),
         current_level: i*14,
         prize: i*500000,
       )
